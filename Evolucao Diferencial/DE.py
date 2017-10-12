@@ -2,8 +2,8 @@ import random
 import numpy as np
 
 class Chromosome:
-    def __init__(self, bitstring):
-        self.bitstring = bitstring
+    def __init__(self, genes):
+        self.genes = genes
         self.fitness = 999
 
     def __lt__(self, other):
@@ -27,32 +27,31 @@ class Chromosome:
             return 0
 
     def __repr__(self):
-        return ' '.join([str(i) for i in self.bitstring])
+        return ' '.join([str(i) for i in self.genes])
 
     def printSolution(self):
         return self.__repr__()
 
     def evaluate(self, objectivefn):
-        self.fitness = objectivefn(self.bitstring)
+        self.fitness = objectivefn(self.genes)
 
     def singlePointCrossover(self, other):
-        c = Chromosome(self.bitstring[0:-1] + other.bitstring[1:])
-        c2 = Chromosome(other.bitstring[0:-1] + self.bitstring[1:])
+        c = Chromosome(self.genes[0:-1] + other.genes[1:])
+        c2 = Chromosome(other.genes[0:-1] + self.genes[1:])
         return [c, c2]
 
     def mutate(self, prob):
         if random.random() < prob:
-            index = random.randint(0, len(self.bitstring)-1)
-            self.bitstring[index] = random.uniform(-5.12, 5.12)
+            index = random.randint(0, len(self.genes)-1)
+            self.genes[index] = random.uniform(-5.12, 5.12)
 
 class EvolucaoDiferencial:
-    def __init__(self, popsize=100, iterations=100, elitism=0.8, stringlen=2, mutRate=0.4, problemParams=None):
+    def __init__(self, popsize=100, iterations=100, elitism=0.8, stringlen=2, mutRate=0.4):
         self.popsize = popsize
         self.iterations = iterations
-        self.fractionKept = elitism
-        self.inputLen = stringlen
-        self.mutationRate = mutRate
-        self.poplist = []
+        self.taxaDeCruzamento = elitism
+        self.genesLen = stringlen
+        self.Beta = mutRate
 
     def makeInitialPopulation(self):
         self.poplist = [Chromosome([random.uniform(-5.12, 5.12)
